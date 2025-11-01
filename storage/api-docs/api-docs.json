@@ -1,0 +1,392 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Gutenberg Books API",
+        "description": "API for accessing Project Gutenberg books data",
+        "contact": {
+            "email": "admin@gutenberg.org"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Local API Server"
+        }
+    ],
+    "paths": {
+        "/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get list of books",
+                "description": "Returns a paginated list of books with optional filtering",
+                "operationId": "getBooks",
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "query",
+                        "description": "Comma-separated list of Gutenberg IDs",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "languages",
+                        "in": "query",
+                        "description": "Comma-separated language codes (e.g., en,fr)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "mime_type",
+                        "in": "query",
+                        "description": "MIME type filter (e.g., text/html)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "topic",
+                        "in": "query",
+                        "description": "Topic filter for subjects or bookshelves",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "description": "Author name filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Title filter",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search in titles and authors",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 100
+                                        },
+                                        "next": {
+                                            "type": "string",
+                                            "example": "http://localhost:8000/api/books?page=2",
+                                            "nullable": true
+                                        },
+                                        "previous": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Book"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get book by ID",
+                "description": "Returns a single book by Gutenberg ID",
+                "operationId": "getBookById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Gutenberg ID of the book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get list of categories",
+                "operationId": "11dc7bee7f8ad5b8d0a6a33493c5ea92",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Book": {
+                "title": "Book",
+                "description": "Book model",
+                "properties": {
+                    "id": {
+                        "description": "Gutenberg ID",
+                        "type": "integer",
+                        "example": 11
+                    },
+                    "title": {
+                        "description": "Book title",
+                        "type": "string",
+                        "example": "Alice's Adventures in Wonderland"
+                    },
+                    "authors": {
+                        "description": "List of authors",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "Carroll, Lewis"
+                                },
+                                "birth_year": {
+                                    "type": "integer",
+                                    "example": 1832,
+                                    "nullable": true
+                                },
+                                "death_year": {
+                                    "type": "integer",
+                                    "example": 1898,
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "languages": {
+                        "description": "Language codes",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "en"
+                        }
+                    },
+                    "subjects": {
+                        "description": "Book subjects",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Fantasy literature"
+                        }
+                    },
+                    "bookshelves": {
+                        "description": "Bookshelf categories",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Children's Literature"
+                        }
+                    },
+                    "formats": {
+                        "description": "Available formats with URLs",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string",
+                            "example": "http://www.gutenberg.org/files/11/11.txt.utf-8"
+                        }
+                    },
+                    "download_count": {
+                        "description": "Number of downloads",
+                        "type": "integer",
+                        "example": 17114
+                    },
+                    "media_type": {
+                        "description": "Media type",
+                        "type": "string",
+                        "example": "Text"
+                    },
+                    "preferred_format_url": {
+                        "description": "Preferred format URL for viewing",
+                        "type": "string",
+                        "example": "http://www.gutenberg.org/files/11/11-h/11-h.htm",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "BookResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "authors": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "birth_year": {
+                                    "type": "integer",
+                                    "nullable": true
+                                },
+                                "death_year": {
+                                    "type": "integer",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "subjects": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "bookshelves": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "formats": {
+                        "type": "object"
+                    },
+                    "download_count": {
+                        "type": "integer"
+                    },
+                    "media_type": {
+                        "type": "string"
+                    },
+                    "preferred_format_url": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Books",
+            "description": "API Endpoints for Books"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        }
+    ]
+}
